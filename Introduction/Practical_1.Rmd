@@ -13,7 +13,7 @@
 We can discuss your solution next week. However, you are welcome to attach an image here if you wish. The following syntax can be used to include an image in a Jupyter or notebook:
 
 ```
-https://drive.google.com/drive/u/1/recent
+https://drive.google.com/file/d/1IX1qGSbH3QsB540JFhyHLjqxQx1oXMhj/view?usp=sharing
 ```
 
 R users can, if they wish, include the URL where their image can be found.

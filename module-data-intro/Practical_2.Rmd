@@ -1,0 +1,163 @@
+### Question 0
+
+*  Draw a concepts diagram that uses all the following Github terminology 
+   * Include any missing keywords that will simplify the concepts diagrams 
+
+
+`Push`, `Repository`, `Clone`, `Pull`, `Pull Request`, `Branch`, `Merging`, `Github Client`, `README file`, `Private or Public`
+
+https://drive.google.com/file/d/16NQogNJbMLFBp2jfbwQBSjqcslz6L4oi/view?usp=sharing
+
+#### Question 1
+
+`matrix(c(1,2,3,4,5,6) , nrow = 3)`
+
+* Running the expression produces the following matrix
+
+|  |  |
+|---|---|
+| 1 | 4 |
+| 2 | 5 |
+| 3 | 6 |
+
+* How can you modify the call to `matrix()` to produce the following matrix instead?
+
+|   | col_1 |  col_2 |
+| --- |---|---|
+| row_1 | 1 | 2 |
+| row_2 | 3 | 4 |
+| row_3 | 5 | 6 |
+
+* Note that you need to name the columns (col_1 and col_2) and name the rows (row_1, row_2, row_3)
+
+Hint: Use the `?` symbol to invoke the matrix documentation
+
+```{r}
+rownames <- c("row_1", "row_2", "row_3")
+colnames <- c("col_1", "col_2")
+matrix(c(1,2,3,4,5,6) , nrow = 3, byrow = TRUE, dimnames = list(rownames, colnames ))
+```
+
+#### Question 1
+
+`matrix(c(1,2,3,4,5,6) , nrow = 3)`
+
+* Running the expression produces the following matrix
+
+|  |  |
+|---|---|
+| 1 | 4 |
+| 2 | 5 |
+| 3 | 6 |
+
+* How can you modify the call to `matrix()` to produce the following matrix instead?
+
+|   | col_1 |  col_2 |
+| --- |---|---|
+| row_1 | 1 | 2 |
+| row_2 | 3 | 4 |
+| row_3 | 5 | 6 |
+
+* Note that you need to name the columns (col_1 and col_2) and name the rows (row_1, row_2, row_3)
+
+Hint: Use the `?` symbol to invoke the matrix documentation
+
+```{r}
+rownames <- c("row_1", "row_2", "row_3")
+colnames <- c("col_1", "col_2")
+matrix(c(1,2,3,4,5,6) , nrow = 3, byrow = TRUE, dimnames = list(rownames, colnames ))
+```
+
+#### Question 2
+
+* Load then sort the airquality data frame on its `Temp` and `Solar.R` columns in reverse order (largest to smallest values)
+  * The function to sort a data frame is called order
+* Display only the first 15 lines of your table
+
+```{r}
+data(airquality)
+```
+
+
+```{r}
+sorted_airquality <- airquality[order(-airquality$Temp, -airquality$Solar.R), ]
+
+head(sorted_airquality, 15)
+```
+
+
+
+
+
+
+#### Question 3
+
+* Sort the airquality data frame on its `Temp` in decreasing order and `Solar.R` in increasing order
+* Display only the first 15 lines of your table
+
+```{r}
+sorted_airquality2 <- airquality[order(-airquality$Temp, airquality$Solar.R), ]
+
+head(sorted_airquality, 15)
+```
+
+#### Question 4
+
+* There are various ways to select a subset of observations from a data frame.
+
+* Consult your [R Reference Card](https://cran.r-project.org/doc/contrib/Baggott-refcard-v2.pdf), see `Data Selection and Manipulation` section.
+  * What operations can you use to select all observations where the temperature is 72. Give at least two different answers to this question
+
+
+```{r}
+
+temp72 <- airquality[airquality$Temp == "72", ]
+
+temp72_2 <- airquality %>% filter(Temp == "72")
+
+```
+
+#### Question 6
+
+* You may have noticed when working with the `airqulity` data that some values show as `NA`
+ * `NA` stands for not available, or missing values.
+* A major part of data wrangling consists of cleaning missing values by either:
+  * Dropping the lines that have missing values
+   * Sometimes we can drop the column with missing values if the column is made of predominantly missing values
+  * Imputing the missing values, which uses educated guesses (or more complex algorithms) to fill the missing values
+  
+* Find and remove all rows that are missing values for the `Solar.R` or `Ozone` variables
+* Save the cleaned data to a new data frame called airquality_no_na
+  * How many lines have been removed?
+
+
+```{r}
+airquality_no_na <- airquality %>%
+  filter(Solar.R != "NA") %>%
+  filter(Ozone != "NA")
+```
+##### 42 lines were removed
+
+#### Question 7
+* Let's use a different strategy and impute the missing value.
+  * replace the missing values for Solar.R using that month's average.
+  * Example:
+    * The missing value for line 6 should be replaced with the average for month 5.
+    * The missing value for line 97 should be replaced with the average for month 8.
+
+```{r}
+avg_by_month <- airquality %>%
+  group_by(Month) %>%
+  summarize(Average_Solar = mean(Solar.R, na.rm = TRUE), Average_Ozone = mean(Ozone, na.rm = TRUE))
+
+```
+
+```{r}
+result_airquality <- airquality %>%
+  left_join(avg_by_month, by = "Month") %>%
+  mutate(Solar.R = ifelse(is.na(Solar.R), Average_Solar, Solar.R)) %>%
+  select(-Average_Solar) %>%
+  mutate(Ozone = ifelse(is.na(Ozone), Average_Ozone, Ozone)) %>%
+  select(-Average_Ozone)
+```
+
